@@ -4,5 +4,6 @@
 
 int main()
 {
+    puts("KPSpamRunner");
     return 0;
 }

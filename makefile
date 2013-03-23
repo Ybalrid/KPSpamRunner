@@ -1,2 +1,2 @@
 all:
-	gcc -Wall *.c -lSDL
+	gcc -Wall *.c -lSDL -o KPSpamRunner
