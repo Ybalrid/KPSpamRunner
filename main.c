@@ -19,21 +19,18 @@ enum
     SCORE
 };
 
+typedef SDL_Color TTF_font_color;
+
 int main()
 {
     puts("KPSpamRunner");
 
-    //declaring games variables :
-    int score = 0;
-    const int nbBestScores = 0;
-    int distance = 0;
     SDL_Event event; //event catcher
     
     SDL_Rect root;//root pixel coord
     root.x = 0;
     root.y = 0;
 
-    Pikatux player; //create the player. he's a Pikatux ! =D
     
     const int windowSizeX=1024;
     const int windowSizeY=768;
@@ -42,13 +39,17 @@ int main()
     TTF_Init(); //initialize the true type font library
     
     TTF_Font *font = NULL;
-    font = TTF_OpenFont("./bolonium.ttf", 20);
+    font = TTF_OpenFont("./bolonium.ttf", 70);
+    
+    TTF_font_color blackFont = {0, 0, 0};
     
     if (font == NULL)
     {
         puts("Font not found");
         return -1;
     }
+
+
 
     //create a 32bit color window with bouble buffering and put it into the graphic card memory
     SDL_Surface *screen = SDL_SetVideoMode(
@@ -65,21 +66,48 @@ int main()
     //refresh window 
     SDL_Flip(screen);
 
-    int run = 1;
-    int stage = TITLE; //will start on the title screen;
+
+
+    //GAME object
     
+    Pikatux player; //create the player. he's a Pikatux ! =D
+
+    int score = 0;
+    const int nbBestScores = 0;
+    int distance = 0;
+
+    SDL_Surface *pressEnter = TTF_RenderUTF8_Blended(font, "Appuyez sur Entrée !",blackFont);
+
+    SDL_Surface* walkCycle[5]; //5 step of annimation
+    
+    //load it from files
+    walkCycle[0] = IMG_Load("Walk-0.png");
+    walkCycle[1] = IMG_Load("Walk-1.png");
+    walkCycle[2] = IMG_Load("Walk-2.png");
+    walkCycle[3] = IMG_Load("Walk-3.png");
+    walkCycle[4] = IMG_Load("Walk-4.png");
+    
+    initPikatux_sprite(&player,walkCycle);
+    
+    /////////////////////// GAME RUNNIGN
+    int run = 1;
+    int stage = TITLE; //will start on the title screen
+
+    SDL_Rect blitCursor;
     while(run) //render loop
     {
         //GRAPHIC RENDERING
-        SDL_Flip(screen);
+        
+        SDL_FillRect(screen, NULL,SDL_MapRGB(screen->format,  0, 128, 255));
+        SDL_BlitSurface(background, NULL, screen, &root);
 
         switch(stage)
         {
             default:
             case TITLE:
-            SDL_FillRect(screen, NULL,SDL_MapRGB(screen->format,  0, 128, 255));
-            SDL_BlitSurface(background, NULL, screen, &root);
-
+            blitCursor.x=768/2 -150;
+            blitCursor.y=1024/2 + 20;
+            SDL_BlitSurface(pressEnter, NULL, screen, &blitCursor);
                 break;
         }
 
@@ -91,6 +119,8 @@ int main()
             run = 0;
             break;
         }
+   
+        SDL_Flip(screen);
     }
     
     TTF_Quit();

@@ -8,10 +8,11 @@ typedef struct Pikatux Pikatux;
 struct Pikatux
 {
     SDL_Rect coord;
-    SDL_Surface *sprite;
+    SDL_Surface* sprite[5];
+    int step;
 };
 
-void initPikatux_sprite(Pikatux *player, SDL_Surface *sprite);
+void initPikatux_sprite(Pikatux *player, SDL_Surface* sprite[5]);
 void initPikatux_Pos(Pikatux *player);
 
 void pikatux_step(Pikatux *player);
