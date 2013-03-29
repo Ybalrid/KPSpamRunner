@@ -4,7 +4,7 @@
 
 //SDL library
 #include <SDL/SDL.h>
-
+#include <SDL/SDL_image.h>
 //projetc files
 #include "pikatux.h"
 #include "files.h"
@@ -24,7 +24,6 @@ int main()
     
     const int windowSizeX=1024;
     const int windowSizeY=768;
-    
     SDL_Init(SDL_INIT_VIDEO);
     
     SDL_Surface *screen = SDL_SetVideoMode(
