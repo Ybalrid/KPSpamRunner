@@ -5,6 +5,7 @@
 //SDL library
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 //projetc files
 #include "pikatux.h"
 #include "files.h"
@@ -38,6 +39,16 @@ int main()
     const int windowSizeY=768;
 
     SDL_Init(SDL_INIT_VIDEO); //initialize SDL with video module
+    TTF_Init(); //initialize the true type font library
+    
+    TTF_Font *font = NULL;
+    font = TTF_OpenFont("./bolonium.ttf", 20);
+    
+    if (font == NULL)
+    {
+        puts("Font not found");
+        return -1;
+    }
 
     //create a 32bit color window with bouble buffering and put it into the graphic card memory
     SDL_Surface *screen = SDL_SetVideoMode(
@@ -82,6 +93,7 @@ int main()
         }
     }
     
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }
