@@ -19,6 +19,9 @@ int main()
     int distance = 0;
     SDL_Event event; //event catcher
     
+    SDL_Rect root;
+    root.x = 0;
+    root.y = 0;
 
     Pikatux player; //create the player. he's a Pikatux ! =D
     
@@ -30,8 +33,12 @@ int main()
             windowSizeX, windowSizeY, 32, SDL_HWSURFACE| SDL_DOUBLEBUF);
 
     SDL_WM_SetCaption("KPSpamRunner", NULL);
+    
+    //background
     SDL_FillRect(screen, NULL,SDL_MapRGB(screen->format,  0, 128, 255));
     
+    SDL_Surface *background  = IMG_Load("./Background.png");
+    SDL_BlitSurface(background, NULL, screen, &root);
     SDL_Flip(screen);
     int run = 1;
     while(run) //render loop
