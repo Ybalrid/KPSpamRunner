@@ -1,2 +1,2 @@
 all:
-	gcc -Wall *.c -lSDL -lSDL_image -lSDL_ttf -o KPSpamRunner
+	gcc *.c -g -lSDL -lSDL_image -lSDL_ttf -Wunused-variable -o KPSpamRunner

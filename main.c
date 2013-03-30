@@ -6,6 +6,8 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#include <string.h>
+
 //projetc files
 #include "pikatux.h"
 #include "files.h"
@@ -89,11 +91,18 @@ int main()
     
     initPikatux_sprite(&player,walkCycle);
     
+    char name[128];
+    SDL_Surface *dispName = NULL;
+    SDL_Surface *dispTime = NULL;
+
     /////////////////////// GAME RUNNIGN
     int run = 1;
-    int stage = TITLE; //will start on the title screen
+    int stage = TITLE; //will start on the title screen    
+    int timeLeft = 30;
 
     SDL_Rect blitCursor;
+    char input[2];
+    input[1] = '\0';
     while(run) //render loop
     {
         //GRAPHIC RENDERING
@@ -105,9 +114,18 @@ int main()
         {
             default:
             case TITLE:
-            blitCursor.x=768/2 -150;
-            blitCursor.y=1024/2 + 20;
-            SDL_BlitSurface(pressEnter, NULL, screen, &blitCursor);
+                blitCursor.x=768/2 -150;
+                blitCursor.y=1024/2 + 20;
+                SDL_BlitSurface(pressEnter, NULL, screen, &blitCursor);
+                break;
+            case SCORE:
+                break;
+            case RUN:
+                break;
+            case NAME_INPUT:
+                dispName = TTF_RenderText_Blended(font, name, blackFont);
+                SDL_BlitSurface(dispName, NULL ,screen, &root); 
+
                 break;
         }
 
@@ -118,11 +136,47 @@ int main()
             case SDL_QUIT:
             run = 0;
             break;
+
+            case SDL_KEYDOWN:
+            switch (event.key.keysym.sym)
+            {
+                case SDLK_RETURN:
+                if (stage == TITLE)
+                    //stage = NAME_INPUT;
+                    stage = RUN;
+                break;
+            }
+
+
+
+            if (stage == NAME_INPUT) //type text with the keyboard
+            {
+                if(SDL_KEYDOWN)
+                {
+
+
+                    if (event.key.keysym.sym >= 97 || event.key.keysym.sym <= 122)
+                    {
+                        if(strlen(input) < 126)
+                        {
+                            input[0] = (char) event.key.keysym.sym;
+                            strcat(name,input);
+                        }
+                    }
+
+                    if (event.key.keysym.sym == SDLK_BACKSPACE)
+                        if(strlen(name) >= 1)
+                            name[strlen(name) - 1] = '\0'; 
+                }
+            }
+
+            break;
         }
-   
+
         SDL_Flip(screen);
+        // SDL_Delay(200);
     }
-    
+
     TTF_Quit();
     SDL_Quit();
     return 0;
