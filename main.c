@@ -94,11 +94,10 @@ int main()
     SDL_Surface *dispTime = NULL;
     SDL_Surface *dispScore = NULL;
     char dispScoreString[40];
-    
+    char dispTimeString[12]; 
     /////////////////////// GAME RUNNIGN
     int run = 1;
     int stage = TITLE; //will start on the title screen    
-    int timeLeft = 30;
 
     SDL_Rect blitCursor;
     char input[2];
@@ -147,6 +146,13 @@ int main()
                     pikatuxRunning = 0;
                     stage = SCORE;
                 }
+
+                sprintf(dispTimeString,"Time : %d", 30 - (curTime - startTime)/1000);
+                blitCursor.x = root.x + 10;
+                blitCursor.y = root.x + 10;
+                dispTime =  TTF_RenderUTF8_Blended(font,dispTimeString,blackFont);
+                SDL_BlitSurface(dispTime,NULL,screen,&blitCursor);
+                
                 break;
             case NAME_INPUT:
                 dispName = TTF_RenderText_Blended(font, name, blackFont);
@@ -165,6 +171,9 @@ int main()
             case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
             {
+                case SDLK_ESCAPE:
+                    run = 0;
+                    break;
                 case SDLK_RETURN:
                 if (stage == TITLE)
                     //stage = NAME_INPUT;
