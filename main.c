@@ -75,26 +75,26 @@ int main()
     Pikatux player; //create the player. he's a Pikatux ! =D
 
     int score = 0;
-    const int nbBestScores = 0;
-    int distance = 0;
 
     SDL_Surface *pressEnter = TTF_RenderUTF8_Blended(font, "Appuyez sur Entrée !",blackFont);
 
     SDL_Surface* walkCycle[5]; //5 step of annimation
     
     //load it from files
-    walkCycle[0] = IMG_Load("Walk-0.png");
-    walkCycle[1] = IMG_Load("Walk-1.png");
-    walkCycle[2] = IMG_Load("Walk-2.png");
-    walkCycle[3] = IMG_Load("Walk-3.png");
-    walkCycle[4] = IMG_Load("Walk-4.png");
+    walkCycle[0] = IMG_Load("./walk-0.png");
+    walkCycle[1] = IMG_Load("./walk-1.png");
+    walkCycle[2] = IMG_Load("./walk-2.png");
+    walkCycle[3] = IMG_Load("./walk-3.png");
+    walkCycle[4] = IMG_Load("./walk-4.png");
     
     initPikatux_sprite(&player,walkCycle);
-    
+    initPikatux_Pos(&player); 
     char name[128];
     SDL_Surface *dispName = NULL;
     SDL_Surface *dispTime = NULL;
-
+    SDL_Surface *dispScore = NULL;
+    char dispScoreString[40];
+    
     /////////////////////// GAME RUNNIGN
     int run = 1;
     int stage = TITLE; //will start on the title screen    
@@ -103,13 +103,20 @@ int main()
     SDL_Rect blitCursor;
     char input[2];
     input[1] = '\0';
+    int curTime = SDL_GetTicks();
+    int oldTime = curTime;
+    int startTime = 0;
+    int oldPressTime = 0;    
+    int pikatuxRunning = 0;
+
     while(run) //render loop
     {
         //GRAPHIC RENDERING
-        
+        oldTime = curTime;
+        curTime = SDL_GetTicks();
         SDL_FillRect(screen, NULL,SDL_MapRGB(screen->format,  0, 128, 255));
         SDL_BlitSurface(background, NULL, screen, &root);
-
+        printf("curTime = %d\n", curTime);
         switch(stage)
         {
             default:
@@ -119,18 +126,36 @@ int main()
                 SDL_BlitSurface(pressEnter, NULL, screen, &blitCursor);
                 break;
             case SCORE:
+                pikatuxRunning = 0;
+                printf("SCORE = %d\n", score);
+                sprintf(dispScoreString,"SCORE : %d",score);
+                dispScore = TTF_RenderUTF8_Blended(font,dispScoreString,blackFont);
+                blitCursor.y = 1074/2 + 20;
+                blitCursor.x = 768/2 -30;
+
+                SDL_BlitSurface(dispScore,NULL,screen,&blitCursor);
                 break;
             case RUN:
+                SDL_BlitSurface(player.sprite[player.step], NULL, screen, &player.coord);
+                if (pikatuxRunning == 0)
+                {
+                    startTime = SDL_GetTicks();
+                    pikatuxRunning = 1;
+                }
+                if (curTime - startTime >= 30000)
+                {
+                    pikatuxRunning = 0;
+                    stage = SCORE;
+                }
                 break;
             case NAME_INPUT:
                 dispName = TTF_RenderText_Blended(font, name, blackFont);
                 SDL_BlitSurface(dispName, NULL ,screen, &root); 
-
                 break;
         }
-
+    
         //EVENT Processing
-        SDL_PollEvent(&event); //do NOT pause the program
+        SDL_WaitEvent(&event); //do NOT pause the program
         switch (event.type)
         {   
             case SDL_QUIT:
@@ -145,15 +170,29 @@ int main()
                     //stage = NAME_INPUT;
                     stage = RUN;
                 break;
+
+                case SDLK_SPACE:
+                if(pikatuxRunning)
+                {
+                    puts("space down");
+                    score ++;
+                    pikatux_step(&player);
+                    pikatux_showSpeed(&player,SDL_GetTicks()-oldPressTime);
+                    oldPressTime=SDL_GetTicks();
+                }
+                break;
             }
+            
+           
 
 
+
+            
 
             if (stage == NAME_INPUT) //type text with the keyboard
             {
                 if(SDL_KEYDOWN)
                 {
-
 
                     if (event.key.keysym.sym >= 97 || event.key.keysym.sym <= 122)
                     {
@@ -173,8 +212,8 @@ int main()
             break;
         }
 
+
         SDL_Flip(screen);
-        // SDL_Delay(200);
     }
 
     TTF_Quit();
