@@ -95,7 +95,7 @@ int main()
     SDL_Surface *dispScore = NULL;
     char dispScoreString[40];
     char dispTimeString[12]; 
-    /////////////////////// GAME RUNNIGN
+    /////////////////////// GAME RUNNING
     int run = 1;
     int stage = TITLE; //will start on the title screen    
 
@@ -197,12 +197,6 @@ int main()
                 break;
             }
             
-           
-
-
-
-            
-
             if (stage == NAME_INPUT) //type text with the keyboard
             {
                 if(SDL_KEYDOWN)
