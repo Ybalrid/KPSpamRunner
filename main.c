@@ -4,8 +4,8 @@
 
 //SDL library
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <string.h>
 
 //projetc files
@@ -167,7 +167,7 @@ int main()
             case SDL_QUIT:
             run = 0;
             break;
-
+        
             case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
             {
@@ -178,6 +178,11 @@ int main()
                 if (stage == TITLE)
                     //stage = NAME_INPUT;
                     stage = RUN;
+                if(stage == SCORE)
+                {
+                        score = 0;
+                        stage = TITLE;
+                }
                 break;
 
                 case SDLK_SPACE:
