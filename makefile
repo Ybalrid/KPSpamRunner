@@ -8,7 +8,7 @@ all:
 else
 
 all:
-	gcc *.c -g -lSDL -lm -lSDL_image -lSDL_ttf -Wunused-variable -o KPSpamRunner
+	gcc -I/usr/include/SDL *.c -g -lSDL -lm -lSDL_image  -lSDL_ttf -Wunused-variable -o KPSpamRunner
 
 endif
 
